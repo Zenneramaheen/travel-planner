@@ -1,3 +1,5 @@
+fastapi
+pydantic
+groq
 streamlit
 python-dotenv
-groq

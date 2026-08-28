@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURELIA | AI Travel Planner</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+:root{--bg:#080909;--panel:#111313;--panel2:#171919;--gold:#c9a86a;--text:#f4f0e8;--muted:#a7a7a7;--line:#302a20}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 5%,rgba(201,168,106,.12),transparent 28%),radial-gradient(circle at 90% 10%,rgba(70,100,140,.12),transparent 25%),linear-gradient(135deg,#070808,#101213 55%,#0b0c0c);color:var(--text);font-family:Inter,sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}.app{display:grid;grid-template-columns:330px 1fr;min-height:100vh}.side{background:linear-gradient(180deg,#111313,#080909);border-right:1px solid var(--line);padding:25px;position:sticky;top:0;height:100vh;overflow:auto}.brand{font-family:"Playfair Display";font-size:25px;color:var(--gold)}.caption{color:var(--muted);font-size:13px;margin:4px 0 25px}.side h3{font-family:"Playfair Display";margin-top:24px}.field{margin:14px 0}.field label{display:block;font-size:12px;color:#aaa;margin-bottom:7px}.field input,.field select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid #353127;background:var(--panel2);color:var(--text);outline:none}.btn{width:100%;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,#c8a66a,#8d6b38);color:#111;font-weight:700;cursor:pointer;margin-top:8px}.btn.secondary{background:#20211f;color:#eee;border:1px solid #3a362d}.main{padding:38px 5vw}.hero h1{font-family:"Playfair Display";font-size:clamp(42px,6vw,68px);margin:0}.gold{color:var(--gold)}.subtitle{color:#aaa;margin:8px 0 26px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.metric{background:rgba(255,255,255,.045);border:1px solid rgba(201,168,106,.2);border-radius:16px;padding:15px;text-align:center}.metric b{display:block;color:#d6b477;font-size:21px}.metric span{font-size:12px;color:#999}.tabs{display:flex;gap:8px;margin:26px 0 14px}.tab{padding:10px 15px;border-radius:999px;border:1px solid #39342a;background:#121313;color:#bbb;cursor:pointer}.tab.active{color:#111;background:var(--gold)}.card{background:rgba(255,255,255,.045);border:1px solid rgba(201,168,106,.22);border-radius:18px;padding:20px;margin:12px 0;box-shadow:0 10px 35px rgba(0,0,0,.2)}.chat{height:430px;overflow:auto;padding:8px}.msg{max-width:85%;padding:13px 16px;border-radius:15px;margin:10px 0;line-height:1.6;white-space:pre-wrap}.user{margin-left:auto;background:#27251f}.assistant{background:#151717;border:1px solid #2e2c27}.composer{display:flex;gap:10px;margin-top:10px}.composer input{flex:1;padding:14px;border-radius:12px;border:1px solid #3a362d;background:#171919;color:white}.composer button{padding:0 20px;border-radius:12px;border:0;background:var(--gold);font-weight:700}.loading{color:var(--gold);padding:12px}.hidden{display:none}.result{white-space:pre-wrap;line-height:1.7}.ideas{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.error{color:#ff9b9b;background:#301c1c;padding:12px;border-radius:10px;margin-top:10px}@media(max-width:850px){.app{grid-template-columns:1fr}.side{position:relative;height:auto}.metrics{grid-template-columns:repeat(2,1fr)}.ideas{grid-template-columns:1fr}.main{padding:25px 18px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand">✈ AURELIA</div><div class="caption">Luxury AI travel planner</div>
+  <h3>Trip details</h3>
+  <div class="field"><label>Destination</label><input id="destination" placeholder="e.g. Bali, Dubai, Paris"></div>
+  <div class="field"><label>Number of days</label><input id="days" type="number" min="1" max="30" value="5"></div>
+  <div class="field"><label>Travelers</label><input id="travelers" type="number" min="1" max="20" value="2"></div>
+  <div class="field"><label>Budget (₹)</label><input id="budget" type="number" min="5000" value="100000"></div>
+  <div class="field"><label>Start date</label><input id="start" type="date"></div>
+  <div class="field"><label>Trip pace</label><select id="pace"><option>Relaxed</option><option selected>Balanced</option><option>Packed</option></select></div>
+  <div class="field"><label>Hotel style</label><select id="hotel"><option>Luxury 5-star</option><option>Boutique hotel</option><option>Mid-range hotel</option><option>Budget-friendly</option><option>Resort</option></select></div>
+  <div class="field"><label>Interests (comma separated)</label><input id="interests" value="Culture, Food"></div>
+  <button class="btn" onclick="generateItinerary()">🗺 Generate itinerary</button>
+  <button class="btn secondary" onclick="clearAll()">🧹 Clear</button>
+</aside>
+<main class="main">
+  <div class="hero"><h1>Travel, <span class="gold">beautifully.</span></h1><p class="subtitle">AURELIA turns your ideas, budget and preferences into an elegant travel plan.</p></div>
+  <div class="metrics"><div class="metric"><b>AI</b><span>Smart planning</span></div><div class="metric"><b>24/7</b><span>Always available</span></div><div class="metric"><b>₹</b><span>Budget aware</span></div><div class="metric"><b>∞</b><span>Ideas</span></div></div>
+  <div class="tabs"><button class="tab active" onclick="showTab('chat',this)">💬 Travel Chat</button><button class="tab" onclick="showTab('itinerary',this)">🗺 Itinerary</button><button class="tab" onclick="showTab('inspiration',this)">✨ Inspiration</button></div>
+  <section id="chat" class="card">
+    <h2>Ask AURELIA anything</h2><p style="color:#aaa">Destinations, hotels, budgets, food, sightseeing, packing and full trip plans.</p>
+    <div id="messages" class="chat"></div>
+    <div class="composer"><input id="prompt" placeholder="Plan a luxury 5-day trip to Bali for 2 people" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">Send</button></div>
+    <div id="chatError"></div>
+  </section>
+  <section id="itinerary" class="card hidden"><h2>Your personalized itinerary</h2><div id="itineraryResult" class="result" style="color:#ccc">Use the sidebar to generate an itinerary.</div></section>
+  <section id="inspiration" class="card hidden"><h2>Travel inspiration</h2><div class="ideas">
+    <div class="card"><h3>🏝 Bali</h3><p>Beaches, temples, wellness and luxury villas.</p></div><div class="card"><h3>🌆 Dubai</h3><p>Shopping, skyline views and desert experiences.</p></div>
+    <div class="card"><h3>🏔 Switzerland</h3><p>Alpine scenery, scenic trains and premium stays.</p></div><div class="card"><h3>🕌 Istanbul</h3><p>History, food, architecture and culture.</p></div>
+    <div class="card"><h3>🌊 Maldives</h3><p>Private overwater villas and pure relaxation.</p></div><div class="card"><h3>🌸 Japan</h3><p>Food, culture, technology and beautiful seasons.</p></div>
+  </div></section>
+  <div style="color:#777;font-size:12px;margin-top:25px">AURELIA AI Travel Planner • Vercel • FastAPI • Groq</div>
+</main>
+</div>
+<script>
+let history=[];
+const $=id=>document.getElementById(id);
+function showTab(id,el){document.querySelectorAll("main section").forEach(s=>s.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));el.classList.add("active")}
+function addMessage(role,text){const d=document.createElement("div");d.className="msg "+role;d.textContent=text;$("messages").appendChild(d);$("messages").scrollTop=$("messages").scrollHeight}
+async function sendChat(){
+ const input=$("prompt"), text=input.value.trim(); if(!text)return;
+ addMessage("user",text); input.value=""; const load=document.createElement("div");load.className="loading";load.textContent="AURELIA is planning...";$("messages").appendChild(load);
+ try{
+  const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text,history})});
+  const data=await r.json(); if(!r.ok)throw new Error(data.detail||"Request failed");
+  load.remove(); addMessage("assistant",data.reply); history.push({role:"user",content:text},{role:"assistant",content:data.reply});
+ }catch(e){load.remove();$("chatError").innerHTML='<div class="error">'+e.message+"</div>"}
+}
+async function generateItinerary(){
+ const destination=$("destination").value.trim(); if(!destination){alert("Please enter a destination first.");return}
+ showTab("itinerary",document.querySelectorAll(".tab")[1]); $("itineraryResult").textContent="Designing your journey...";
+ try{
+  const r=await fetch("/api/itinerary",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+   destination,days:+$("days").value,travelers:+$("travelers").value,budget:+$("budget").value,start_date:$("start").value,
+   pace:$("pace").value,hotel:$("hotel").value,interests:$("interests").value.split(",").map(x=>x.trim()).filter(Boolean)
+  })});
+  const data=await r.json(); if(!r.ok)throw new Error(data.detail||"Request failed"); $("itineraryResult").textContent=data.itinerary;
+ }catch(e){$("itineraryResult").innerHTML='<div class="error">'+e.message+"</div>"}
+}
+function clearAll(){$("messages").innerHTML="";history=[];$("itineraryResult").textContent="Use the sidebar to generate an itinerary.";$("chatError").innerHTML=""}
+$("start").value=new Date().toISOString().slice(0,10);
+addMessage("assistant","Welcome to AURELIA. Tell me where you want to go, your budget, or the kind of experience you want.");
+</script>
+</body>
+</html>
